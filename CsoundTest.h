@@ -35,8 +35,9 @@ namespace acme {
             //Create an instance of Csound
             Csound* csound;
             string csoundText;
-            MYFLT *spin;
-            MYFLT *spout;
+            MYFLT *spin, *spout;
+            int csCompileResult = -1;
+            int ksmpsIndex = 0;
     };
 };
 

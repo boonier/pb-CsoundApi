@@ -14,7 +14,7 @@ BidulePlugin(host){
     //  _caps = CAP_SYNCMASTER | CAP_SYNCSLAVE
     _caps = CAP_SYNCSLAVE;
 
-	_numAudioIns=2;
+	_numAudioIns=9;
 	_numAudioOuts=2;
 	_numMIDIIns=0;
 	_numMIDIOuts=0;
@@ -37,22 +37,22 @@ bool CsoundTest::init() {
     cout << csound << endl;
     cout << "version:" << csound->GetVersion() << endl;
     cout << "api version:" << csound->GetAPIVersion() << endl;
-    
+
     //compile instance of csound.
-    int csCompileResult = csound->Compile("/GIT-work/Csound/csoundAPI_examples/cpp/test8.csd");
-    // csound->CompileCsdText(csoundText.c_str());
+    csCompileResult = csound->Compile("/Users/boonier/Downloads/test8.csd");
+    csound->SetHostImplementedAudioIO(1, 0);
     
     if (csCompileResult == 0) { // compiled OK...
         //access Csound's input/output buffer
         spout = csound->GetSpout();
         spin  = csound->GetSpin();
-        
+
         //start Csound performance
         csound->Start();
         cout << "Successful CSD compile, starting..." << endl;
         return true;
     } else {
-        cout << "CSD did not compile" << endl;
+        cout << "CSD did not compile:" << csCompileResult << endl;
         return false;
     }
 
@@ -60,14 +60,22 @@ bool CsoundTest::init() {
 
 void 
 CsoundTest::getAudioInNames(std::vector<std::string>& vec){
-	vec.push_back("Csound input 1");
-    vec.push_back("Csound input 2");
+	vec.push_back("p1");
+    vec.push_back("p2");
+    vec.push_back("p3");
+    vec.push_back("p4");
+    vec.push_back("p5");
+    vec.push_back("p6");
+    vec.push_back("p7");
+    vec.push_back("p8");
+    vec.push_back("Send Event");
 }
 
 void 
 CsoundTest::getAudioOutNames(std::vector<std::string>& vec){
 	vec.push_back("Csound output 1");
     vec.push_back("Csound output 2");
+
 }
 
 void 
@@ -107,96 +115,40 @@ CsoundTest::parameterUpdate(long id) {
 }
 
 void 
-CsoundTest::process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, MIDIEvents* midiOut, Frequency*** freqIn, Frequency*** freqOut, 
-						Magnitude*** magIn, Magnitude*** magOut, SyncInfo* syncIn, SyncInfo* syncOut){
-	
-
+CsoundTest::process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, MIDIEvents* midiOut, Frequency*** freqIn, Frequency*** freqOut, Magnitude*** magIn, Magnitude*** magOut, SyncInfo* syncIn, SyncInfo* syncOut){
     
-    int sampleCount=0;
-
-    //For sake of simplicity we are generating a simple waveform.
-    //In most cases a signal will be taken directly from your sound
-    //card using an audio library.
-    MYFLT simpleRamp[48000];
+    long sampleFrames = _dspInfo.bufferSize;
+//    unsigned int position = 0;
+    unsigned int channels = 2;
+    Sample* s1 = sampleOut[0];
+    Sample* s2 = sampleOut[1];
     
-    for (int i=0; i<48000; i++) {
-        simpleRamp[i] = (float)i/44100.f;
-//        if (i == 0)
-//            cout << "loop" << endl;
-    }
-
-
-    
-    while(csound->PerformKsmps() == 0)
-    {
-        //this is our main processing loop. External audio can be sent
-        //to Csound in this loop by writing directly to the spin
-        //buffers. Csound picks up the input signal using its audio input opcodes.
-        //see test8.csd.
-        for (int i=0;i<csound->GetKsmps();i++)
-        {
-            spin[i] = simpleRamp[sampleCount];
-            sampleCount=sampleCount==48000 ? 0 : sampleCount+1;
-
-            //Csound's output signal can also be accessed through spout and output to
-            //a soundcard using an audio library.
+    while(--sampleFrames >= 0) {
+        
+        if (ksmpsIndex == csound->GetKsmps()) {
+            csCompileResult = csound->PerformKsmps();
+            if (csCompileResult == 0)
+                ksmpsIndex = 0;
         }
+        
+//
+//        for (int chans = 0; chans < 2; chans++){
+//            position = ksmpsIndex * channels;
+//        }
+      
+        (*s1++) = spout[0 + (ksmpsIndex * channels)];
+        (*s2++) = spout[1 + (ksmpsIndex * channels)];
+        
+        ksmpsIndex++;
+//        (*s1++) = _currentSample;
+//        (*s2++) = _currentSample;
+              
+        
+        
+//        sampleOut[0][i] = spout[ksmpsIndex];
+//        sampleOut[1][i] = spout[ksmpsIndex];
     }
-
-    
-	//VC6 has scope problems with for loop indices
-	unsigned int i = 0;
-
-	//1 - you'll always have _dspInfo.bufferSize samples to process
-	//2 - you'll always have _dspInfo.fftOverlapPerBuffer overlap per mag/freq channels to process each having _dspInfo.fftWindowSizeHalf bins
-	//3 - if you're not synced to anything, syncIn will be NULL
-	//4 - midiIn events will always be sorted by bufTick
-	//5 - midiOut events will be sorted afterwards so it's at your convenience to create them sorted or not.
 	
-	for(i = 0; i < _numAudioIns; ++i)
-		memcpy(sampleOut[i], sampleIn[i], _dspInfo.bufferSize * sizeof(Sample));
-
-//	long sampleFrames = _dspInfo.bufferSize;
-//	float paramValf = (float)_dParamValue;
-	
-//	Sample* s1 = sampleOut[1];
-//	while(--sampleFrames >= 0)
-//		(*s1++) = paramValf;
-		
-		
-//	Sample* s2 = sampleOut[2];
-//	if(!_afConnected)
-//		memset(s2, 0, _dspInfo.bufferSize * sizeof(Sample));
-//	else {
-//		sampleFrames = _dspInfo.bufferSize;
-//		while(--sampleFrames >= 0) {
-			//dumb, dumb
-//			if(_dumbAFCounter >= _af.numSamples)
-//				_dumbAFCounter = 0;
-//				(*s2++) = _af.channels[0][_dumbAFCounter];
-//				_dumbAFCounter++;
-//		}
-//	}
-
-//	for(i = 0; i < _numMIDIIns; ++i) {
-//		midiOut[i].numEvents = midiIn[i].numEvents;
-//		for(j = 0; j < midiIn[i].numEvents; ++j) {
-//			midiOut[i].events[j].midiData[0] = midiIn[i].events[j].midiData[0];
-//			midiOut[i].events[j].midiData[1] = midiIn[i].events[j].midiData[1];
-//			midiOut[i].events[j].midiData[2] = midiIn[i].events[j].midiData[2];
-//			midiOut[i].events[j].midiData[3] = midiIn[i].events[j].midiData[3];
-//			midiOut[i].events[j].bufTick = midiIn[i].events[j].bufTick;
-//			midiOut[i].events[j].fdetune = midiIn[i].events[j].fdetune;
-//		}
-//	}
-//
-//	for(i = 0; i < _numFreqIns; ++i)
-//		for(j = 0; j < (size_t)_dspInfo.fftOverlapPerBuffer; ++j)
-//			memcpy(freqOut[i][j], freqIn[i][j], _dspInfo.fftWindowSizeHalf * sizeof(Frequency));
-//
-//	for(i = 0; i < _numMagIns; ++i)
-//		for(j = 0; j < (size_t)_dspInfo.fftOverlapPerBuffer; ++j)
-//			memcpy(magOut[i][j], magIn[i][j], _dspInfo.fftWindowSizeHalf * sizeof(Magnitude));
 
 }
 

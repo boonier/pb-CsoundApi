@@ -15,6 +15,7 @@
 		9626A79D095321AC006C620D /* SDKExampleMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969BD85804FFA38400A80165 /* SDKExampleMain.cpp */; };
 		9626A79F095321AC006C620D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08EA7FFBFE8413EDC02AAC07 /* Carbon.framework */; };
 		B20BECAD27162D4A00F6FB24 /* CsoundLib64.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B20BECA9271617F700F6FB24 /* CsoundLib64.framework */; };
+		B21E384A271F20EA00911E3E /* test8.csd in Resources */ = {isa = PBXBuildFile; fileRef = B2BD9227271ED0E0009B59BA /* test8.csd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +43,7 @@
 		969BD85804FFA38400A80165 /* SDKExampleMain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SDKExampleMain.cpp; sourceTree = SOURCE_ROOT; };
 		B20BECA9271617F700F6FB24 /* CsoundLib64.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CsoundLib64.framework; path = ../../../../Library/Frameworks/CsoundLib64.framework; sourceTree = "<group>"; };
 		B2473DC225C1C52B00DAE97C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B2BD9227271ED0E0009B59BA /* test8.csd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.csd; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B2BD9227271ED0E0009B59BA /* test8.csd */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
@@ -190,6 +193,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9626A799095321AC006C620D /* InfoPlist.strings in Resources */,
+				B21E384A271F20EA00911E3E /* test8.csd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +337,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_ASSET_PATHS = test8.csd;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
@@ -365,6 +370,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_ASSET_PATHS = test8.csd;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
@@ -396,6 +402,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				DEVELOPMENT_ASSET_PATHS = test8.csd;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
