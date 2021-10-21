@@ -4,7 +4,7 @@
 #include "../common/BiduleSDK.h"
 #include <string>
 #include "CsoundLib64/csound.hpp"
-
+#include <array>
 
 using namespace std;
 
@@ -38,6 +38,8 @@ namespace acme {
             MYFLT *spin, *spout;
             int csCompileResult = -1;
             int ksmpsIndex = 0;
+            array<float, 256> sinTable;
+            
     };
 };
 

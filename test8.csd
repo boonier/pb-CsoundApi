@@ -1,6 +1,6 @@
 <CsoundSynthesizer>
 <CsOptions>
-
+-n
 </CsOptions>
 <CsInstruments>
 ; Initialize the global variables.
@@ -10,9 +10,9 @@ nchnls = 2
 
 ;instrument will be triggered by keyboard widget
 instr 1
-    aOutL = oscili:a(scale(oscili:k(1, 0.25, -1, 0), 0.2, 1), 400 + oscili:k(2, 3))
-    aOutR = oscili:a(scale(oscili:k(1, 0.25, -1, 0.5), 0.2, 1), 200 + oscili:k(4, 1.5))
-    outs aOutL, aOutR
+    aOutL = oscili:a(scale(oscili:k(1, 0.25, -1, 0), 0.2, 1), 400 * p4 + oscili:k(2, 3))
+    aOutR = oscili:a(scale(oscili:k(1, 0.25, -1, 0.5), 0.2, 1), 200 * p4 + oscili:k(4, 1.5))
+    outs aOutL/8, aOutR/8
 endin
 
 </CsInstruments>

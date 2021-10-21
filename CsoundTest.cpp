@@ -3,6 +3,8 @@
 #include "CsoundLib64/csound.hpp"
 #include <iostream>
 #include <string>
+#include <array>
+#include <math.h>
 
 using namespace plogue::biduleSDK;
 using namespace acme;
@@ -11,7 +13,7 @@ using namespace std;
 CsoundTest::CsoundTest(BiduleHost* host):
 BidulePlugin(host){
 	//fill in plugin capabilities as a mask
-    //  _caps = CAP_SYNCMASTER | CAP_SYNCSLAVE
+    // _caps = CAP_SYNCMASTER | CAP_SYNCSLAVE
     _caps = CAP_SYNCSLAVE;
 
 	_numAudioIns=9;
@@ -24,6 +26,14 @@ BidulePlugin(host){
 	_numMagOuts=0;
     _numUIColumns=1;
     
+//    for (int i = 0; i < 256; i++) {
+//        sinTable[i] = (float)i/256;
+//        cout << sinTable[i] << endl;
+//    }
+//    
+//    cout << "sinTable size: " << sinTable.size() << endl;
+    cout << M_PI << endl;
+ 
 }
 
 CsoundTest::~CsoundTest(){
@@ -39,6 +49,7 @@ bool CsoundTest::init() {
     cout << "api version:" << csound->GetAPIVersion() << endl;
 
     //compile instance of csound.
+//    csCompileResult = csound->Compile("../Resources/test8.csd");
     csCompileResult = csound->Compile("/Users/boonier/Downloads/test8.csd");
     csound->SetHostImplementedAudioIO(1, 0);
     
@@ -55,7 +66,7 @@ bool CsoundTest::init() {
         cout << "CSD did not compile:" << csCompileResult << endl;
         return false;
     }
-
+    
 }
 
 void 
@@ -122,31 +133,28 @@ CsoundTest::process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, M
     unsigned int channels = 2;
     Sample* s1 = sampleOut[0];
     Sample* s2 = sampleOut[1];
+
+    
     
     while(--sampleFrames >= 0) {
-        
-        if (ksmpsIndex == csound->GetKsmps()) {
-            csCompileResult = csound->PerformKsmps();
-            if (csCompileResult == 0)
-                ksmpsIndex = 0;
+        if (csCompileResult == 0) {
+            if (ksmpsIndex == csound->GetKsmps()) {
+                csCompileResult = csound->PerformKsmps();
+                if (csCompileResult == 0)
+                    ksmpsIndex = 0;
+            }
+            
+            (*s1++) = spout[0 + (ksmpsIndex * channels)];
+            (*s2++) = spout[1 + (ksmpsIndex * channels)];
+            ksmpsIndex++;
+        } else {
+            (*s1++) = 0.f;
+            (*s2++) = 0.f;
         }
         
-//
-//        for (int chans = 0; chans < 2; chans++){
-//            position = ksmpsIndex * channels;
-//        }
-      
-        (*s1++) = spout[0 + (ksmpsIndex * channels)];
-        (*s2++) = spout[1 + (ksmpsIndex * channels)];
-        
-        ksmpsIndex++;
-//        (*s1++) = _currentSample;
-//        (*s2++) = _currentSample;
-              
-        
-        
-//        sampleOut[0][i] = spout[ksmpsIndex];
-//        sampleOut[1][i] = spout[ksmpsIndex];
+//        (*s1++) = sinTable[position];
+//        (*s2++) = sinTable[position];
+//        position = position < sinTable.size() ? position+1 : 0;
     }
 	
 
