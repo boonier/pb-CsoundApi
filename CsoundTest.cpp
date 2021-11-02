@@ -6,6 +6,10 @@
 #include <array>
 #include <math.h>
 
+#ifdef __APPLE__
+#include <corefoundation/CFBundle.h>    
+#endif
+
 using namespace plogue::biduleSDK;
 using namespace acme;
 using namespace std;
@@ -30,9 +34,8 @@ BidulePlugin(host){
 //        sinTable[i] = (float)i/256;
 //        cout << sinTable[i] << endl;
 //    }
-//    
 //    cout << "sinTable size: " << sinTable.size() << endl;
-    cout << M_PI << endl;
+//    cout << M_PI << endl;
  
 }
 
@@ -42,28 +45,44 @@ CsoundTest::~CsoundTest(){
 }
 
 bool CsoundTest::init() {
+
+    // get the local bundle CSD from Resources...
+    CFBundleRef mainBundle = CFBundleGetBundleWithIdentifier(CFSTR("com.boonier.CsoundTest"));
+    CFURLRef csdURL = CFBundleCopyResourceURL(mainBundle, CFSTR("test8.csd"), NULL, NULL);
+    string path = CFStringGetCStringPtr(CFURLGetString(csdURL), kCFStringEncodingMacRoman );
+    string sub = "file://";
+    string::size_type i = path.find(sub);
+    if (i != string::npos)
+        path.erase(i, sub.length());
+    
     cout << "Init CsoundTest" << endl;
     csound = new Csound();
     cout << csound << endl;
     cout << "version:" << csound->GetVersion() << endl;
     cout << "api version:" << csound->GetAPIVersion() << endl;
-
+    csound->CreateMessageBuffer(0);
+   
     //compile instance of csound.
-//    csCompileResult = csound->Compile("../Resources/test8.csd");
-    csCompileResult = csound->Compile("/Users/boonier/Downloads/test8.csd");
+    csCompileResult = csound->Compile(path.c_str());
     csound->SetHostImplementedAudioIO(1, 0);
     
     if (csCompileResult == 0) { // compiled OK...
+        cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
         //access Csound's input/output buffer
         spout = csound->GetSpout();
         spin  = csound->GetSpin();
-
+        
         //start Csound performance
         csound->Start();
         cout << "Successful CSD compile, starting..." << endl;
         return true;
     } else {
+        while (csound->GetMessageCnt() > 0) {
+           cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
+           csound->PopFirstMessage();
+        }
         cout << "CSD did not compile:" << csCompileResult << endl;
+        
         return false;
     }
     
@@ -137,6 +156,13 @@ CsoundTest::process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, M
     
     
     while(--sampleFrames >= 0) {
+//        while (csound->PerformKsmps() == 0) {
+//           while (csound->GetMessageCnt() > 0) {
+//              cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
+//              csound->PopFirstMessage();
+//           }
+//        }
+        
         if (csCompileResult == 0) {
             if (ksmpsIndex == csound->GetKsmps()) {
                 csCompileResult = csound->PerformKsmps();
