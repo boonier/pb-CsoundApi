@@ -4,6 +4,7 @@
 #include "../common/BiduleSDK.h"
 #include <string>
 #include "CsoundLib64/csound.hpp"
+//#include "CsoundLib64/csPerfThread.hpp"
 #include <array>
 
 using namespace std;
@@ -39,6 +40,8 @@ namespace acme {
             int csCompileResult = -1;
             int ksmpsIndex = 0;
             array<float, 256> sinTable;
+            double _blurAmt;
+        double _pitch;
             
     };
 };
