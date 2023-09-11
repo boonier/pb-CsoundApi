@@ -5,7 +5,7 @@
 #include <string>
 #include "CsoundLib64/csound.hpp"
 //#include "CsoundLib64/csPerfThread.hpp"
-#include <array>
+//#include <array>
 
 using namespace std;
 
@@ -14,35 +14,39 @@ namespace acme {
     class CsoundTest: public BidulePlugin {
 
 	    public:
-		    CsoundTest(BiduleHost* host);
-			virtual ~CsoundTest();
-            virtual bool init();
-			virtual void getAudioInNames(std::vector<std::string>& vec);
-			virtual void getAudioOutNames(std::vector<std::string>& vec);
-			virtual void getMIDIInNames(std::vector<std::string>& vec);
-			virtual void getMIDIOutNames(std::vector<std::string>& vec);
-			virtual void getFreqInNames(std::vector<std::string>& vec);
-			virtual void getFreqOutNames(std::vector<std::string>& vec);
-			virtual void getMagInNames(std::vector<std::string>& vec);
-			virtual void getMagOutNames(std::vector<std::string>& vec);
+        
+        CsoundTest(BiduleHost* host);
+        virtual ~CsoundTest();
+        virtual bool init();
+        virtual void getAudioInNames(std::vector<std::string>& vec);
+        virtual void getAudioOutNames(std::vector<std::string>& vec);
+        virtual void getMIDIInNames(std::vector<std::string>& vec);
+        virtual void getMIDIOutNames(std::vector<std::string>& vec);
+        virtual void getFreqInNames(std::vector<std::string>& vec);
+        virtual void getFreqOutNames(std::vector<std::string>& vec);
+        virtual void getMagInNames(std::vector<std::string>& vec);
+        virtual void getMagOutNames(std::vector<std::string>& vec);
 
-            virtual void parameterUpdate(long id);
-			virtual void getParametersInfos(ParameterInfo* pinfos);
-			virtual void getParameterChoices(long id, vector<string>& vec);
+        virtual void parameterUpdate(long id);
+        virtual void getParametersInfos(ParameterInfo* pinfos);
+        virtual void getParameterChoices(long id, vector<string>& vec);
 
-			virtual void process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, MIDIEvents* midiOut, Frequency*** freqIn, Frequency*** freqOut, Magnitude*** magIn, Magnitude*** magOut, SyncInfo* syncIn, SyncInfo* syncOut);
+        virtual void process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, MIDIEvents* midiOut, Frequency*** freqIn, Frequency*** freqOut, Magnitude*** magIn, Magnitude*** magOut, SyncInfo* syncIn, SyncInfo* syncOut);
 		
         protected:
-            //Create an instance of Csound
-            Csound* csound;
-            string csoundText;
-            MYFLT *spin, *spout;
-            int csCompileResult = -1;
-            int ksmpsIndex = 0;
-            array<float, 256> sinTable;
-            double _blurAmt;
+        
+        //Create an instance of Csound
+        Csound* csound;
+        string csoundText;
+        string orc, sco;
+        
+        MYFLT *spin, *spout;
+        int _csCompileResult;
+        int _ksmpsIndex;
+    
+        double _blurAmt;
         double _pitch;
-            
+        int _cnt;
     };
 };
 

@@ -15,7 +15,6 @@
 		9626A79D095321AC006C620D /* SDKExampleMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969BD85804FFA38400A80165 /* SDKExampleMain.cpp */; };
 		9626A79F095321AC006C620D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08EA7FFBFE8413EDC02AAC07 /* Carbon.framework */; };
 		B20BECAD27162D4A00F6FB24 /* CsoundLib64.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B20BECA9271617F700F6FB24 /* CsoundLib64.framework */; };
-		B21E384A271F20EA00911E3E /* test8.csd in Resources */ = {isa = PBXBuildFile; fileRef = B2BD9227271ED0E0009B59BA /* test8.csd */; };
 		B237FA02299BC2C500A4A44A /* BiduleSDKTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 969BD85004FFA36800A80165 /* BiduleSDKTypes.h */; };
 		B23DAEEA27289F59002E42EA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B23DAEE927289F59002E42EA /* CoreFoundation.framework */; };
 		B29CDEAC299BD1420053A260 /* BiduleSDK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B29CDEAB299BD1420053A260 /* BiduleSDK.cpp */; };
@@ -202,7 +201,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9626A799095321AC006C620D /* InfoPlist.strings in Resources */,
-				B21E384A271F20EA00911E3E /* test8.csd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
