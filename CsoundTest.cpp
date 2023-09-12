@@ -43,18 +43,22 @@ BidulePlugin(host){
     nchnls=2\n\
     0dbfs=1\n\
     instr 1\n\
-    printk 0.5, 12345\n\
+    ;printk 0.5, 12345\n\
     kmod lfo 12, 3\n\
     aout vco2 0.5, 220+kmod\n\
     outs aout, aout\n\
     endin";
     
-    sco = "i1 0 60";
+    sco = "i1 0 3600";
+    
+//    csd = "<CsoundSynthesizer>\n<CsOptions>\n-n\n</CsOptions>\n<CsInstruments>\n; Initialize the global variables.\nksmps = 64\nnchnls = 2\n0dbfs = 1\n\nchn_k \"phsRate\", 1\nchn_k \"pitch\", 1\n\n;instrument will be triggered by keyboard widget\ninstr 1\n    aOutL = oscili:a(scale(oscili:k(1, 0.25, -1, 0), 0.2, 1), 400 * p4 + oscili:k(2, 3))\n    aOutR = oscili:a(scale(oscili:k(1, 0.25, -1, 0.5), 0.2, 1), 200 * p4 + oscili:k(4, 1.5))\n    outs aOutL/8, aOutR/8\nendin\n\ninstr 2\n    aOutL = oscili:a(scale(oscili:k(1, chnget:k(\"phsRate\"), -1, 0), 0.2, 1), chnget:k(\"pitch\") * p4 + oscili:k(2, 3))\n    aOutR = oscili:a(scale(oscili:k(1, chnget:k(\"phsRate\"), -1, 0.5), 0.2, 1), (chnget:k(\"pitch\")/2) * p4 + oscili:k(4, 1.5))\n    outs aOutL/8, aOutR/8\nendin\n\n</CsInstruments>\n<CsScore>\n;causes Csound to run for about 7000 years...\ni2 0 z 0.25\ni2 0 z 0.5\ni2 0 z 0.75\ni2 0 z 1\ni2 0 z 1.25\ni2 0 z 1.5\ni2 0 z 1.75\ni2 0 z 2\n</CsScore>\n</CsoundSynthesizer>";
 }
 
 CsoundTest::~CsoundTest(){
-    //free Csound object
+    //free Csound stuff
+    cout << "cleanup Csound stuff" << endl;
     csound->Cleanup();
+    csound->Reset();
     delete csound;
 }
 
@@ -63,66 +67,68 @@ bool CsoundTest::init() {
     
     csound = new Csound();
     cout << csound << endl;
-    cout << "version:" << csound->GetVersion() << endl;
-    cout << "api version:" << csound->GetAPIVersion() << endl;
+    cout << "version: " << csound->GetVersion() << endl;
+    cout << "api version: " << csound->GetAPIVersion() << endl;
     csound->CreateMessageBuffer(0);
     
-//    compile instance of .csd
-//    csCompileResult = csound->Compile(path.c_str());
+    /*
+    // compile instance of .csd
+    _csCompileResult = csound->CompileCsdText(csd.c_str());
+    cout << "_csCompileResult: " << _csCompileResult << endl;
+    */
     
+    // disable csound audio handling
     csound->SetHostImplementedAudioIO(1, 0);
     
-
-    //set CsOptions
+    //set CsOptions --nosound
     csound->SetOption("-n");
   
     
-    //compile orc.
-    int resultOrc = csound->CompileOrc(orc.c_str());
-    cout << "resultOrc" << resultOrc << endl;
+    // compile orc.
+    int _resultOrc = csound->CompileOrc(orc.c_str());
+    cout << "resultOrc" << _resultOrc << endl;
 
-    //compile sco
-    int resultSco = csound->ReadScore(sco.c_str());
-//    int resultSco = 0;
-    cout << "resultSco" << resultSco << endl;
-
-    csound->Start();
-    csound->Perform();
+    // compile sco
+    int _resultSco = csound->ReadScore(sco.c_str());
+    cout << "resultSco" << _resultSco << endl;
     
     
-    if (resultOrc == 0 && resultSco == 0) { // compiled OK...
-        cout << "Successfully compiled..." << endl;
-//        cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
-        while (csound->GetMessageCnt() > 0) {
-            cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
-            csound->PopFirstMessage();
-        }
-//        cout << "HERE!" << endl;
+    
+    
+    
+    if (_resultOrc == 0 && _resultSco == 0) { // compiled OK...
+//        cout << "HERE1"<< endl;
         _csCompileResult = 0;
-
-        
-        //access Csound's input/output buffer
+        csound->Start();
+//        cout << "HERE2"<< endl;
+//        cout << "Successfully compiled..." << endl;
+//
+//        // show the Cs logs
+//        while (csound->GetMessageCnt() > 0) {
+//            cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
+//            csound->PopFirstMessage();
+//        }
+//
+//        //access Csound's input/output buffer
         spout = csound->GetSpout();
-        spin  = csound->GetSpin();
-        cout << "spin " << spin << endl;
+//        spin = csound->GetSpin();
+//        cout << "spin " << spin << endl;
         cout << "spout " << spout << endl;
-        
-        //start Csound
-//        csound->Start();
-        
-       
-        
-        cout << "Starting..." << endl;
+//
+//        csound->Perform();
+//        cout << "HERE3" << endl;
+//        cout << "Go..." << endl;
         return true;
     } else {
-        while (csound->GetMessageCnt() > 0) {
-           cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
-           csound->PopFirstMessage();
-        }
-        cout << "CSD did not compile:" << _csCompileResult << endl;
+//        while (csound->GetMessageCnt() > 0) {
+//           cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
+//           csound->PopFirstMessage();
+//        }
+//        cout << "CSD did not compile:" << _csCompileResult << endl;
         return false;
     }
     
+    return true;
 }
 
 void 
@@ -193,6 +199,17 @@ CsoundTest::getParametersInfos(ParameterInfo* pinfos) {
     pinfos[1].paramInfo.pd.minValue = 60;
     pinfos[1].paramInfo.pd.maxValue = 800;
     pinfos[1].paramInfo.pd.precision = 3;
+    
+    pinfos[2].id = 2;
+    strcpy(pinfos[2].name, "orc code");
+    pinfos[2].type = STRINGPARAM;
+    pinfos[2].ctrlType = GUICTRL_TEXTAREA;
+    pinfos[2].linkable = 0;
+    pinfos[2].saveable = 1;
+    strcpy(pinfos[4].paramInfo.ps.defaultValue, "test123");
+//    pinfos[2].paramInfo.pd.minValue = 60;
+//    pinfos[2].paramInfo.pd.maxValue = 800;
+//    pinfos[2].paramInfo.pd.precision = 3;
 }
 
 void 
@@ -218,35 +235,29 @@ CsoundTest::process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, M
 
 
     while(--sampleFrames >= 0) {
-        while (csound->PerformKsmps() == 0) {
-           while (csound->GetMessageCnt() > 0) {
-              cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
-              csound->PopFirstMessage();
-           }
-        }
+//        while (csound->PerformKsmps() == 0) {
+//           while (csound->GetMessageCnt() > 0) {
+//              cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
+//              csound->PopFirstMessage();
+//           }
+//        }
         
         if (_csCompileResult == 0) {
             
             if (_ksmpsIndex == csound->GetKsmps()) {
                 _csCompileResult = csound->PerformKsmps();
-                if (_csCompileResult == 0)
+                if (_csCompileResult == 0) {
+//                    cout << "reset _ksmpsIndex" << endl;
                     _ksmpsIndex = 0;
+                }
+                    
             }
            
-           
+            csound->SetChannel("phsRate", _blurAmt);
+            csound->SetChannel("pitch", _pitch);
             
             (*s1++) = spout[0 + (_ksmpsIndex * channels)];
             (*s2++) = spout[1 + (_ksmpsIndex * channels)];
-            
-//            (*s1++) = 0.f;
-//            (*s2++) = 0.f;
-            
-            if (_cnt != 1) {
-                cout << "HERE3! " << _ksmpsIndex << " " << csound->GetKsmps() << " " << endl;
-                cout << "PerformKsmps() " << csound->PerformKsmps() << endl;
-                _cnt++;
-            }
-            
             _ksmpsIndex++;
         } else {
             (*s1++) = 0.f;

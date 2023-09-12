@@ -37,10 +37,10 @@ namespace acme {
         
         //Create an instance of Csound
         Csound* csound;
-        string csoundText;
-        string orc, sco;
+//        string csoundText;
+        string orc, sco, csd;
         
-        MYFLT *spin, *spout;
+        MYFLT *spout; 
         int _csCompileResult;
         int _ksmpsIndex;
     
