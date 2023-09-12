@@ -71,18 +71,11 @@ bool CsoundTest::init() {
     cout << "api version: " << csound->GetAPIVersion() << endl;
     csound->CreateMessageBuffer(0);
     
-    /*
-    // compile instance of .csd
-    _csCompileResult = csound->CompileCsdText(csd.c_str());
-    cout << "_csCompileResult: " << _csCompileResult << endl;
-    */
-    
     // disable csound audio handling
     csound->SetHostImplementedAudioIO(1, 0);
     
     //set CsOptions --nosound
     csound->SetOption("-n");
-  
     
     // compile orc.
     int _resultOrc = csound->CompileOrc(orc.c_str());
@@ -91,18 +84,12 @@ bool CsoundTest::init() {
     // compile sco
     int _resultSco = csound->ReadScore(sco.c_str());
     cout << "resultSco" << _resultSco << endl;
-    
-    
-    
-    
-    
+ 
     if (_resultOrc == 0 && _resultSco == 0) { // compiled OK...
 //        cout << "HERE1"<< endl;
         _csCompileResult = 0;
         csound->Start();
-//        cout << "HERE2"<< endl;
-//        cout << "Successfully compiled..." << endl;
-//
+
 //        // show the Cs logs
 //        while (csound->GetMessageCnt() > 0) {
 //            cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
@@ -114,17 +101,13 @@ bool CsoundTest::init() {
 //        spin = csound->GetSpin();
 //        cout << "spin " << spin << endl;
         cout << "spout " << spout << endl;
-//
-//        csound->Perform();
-//        cout << "HERE3" << endl;
-//        cout << "Go..." << endl;
         return true;
     } else {
-//        while (csound->GetMessageCnt() > 0) {
-//           cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
-//           csound->PopFirstMessage();
-//        }
-//        cout << "CSD did not compile:" << _csCompileResult << endl;
+        while (csound->GetMessageCnt() > 0) {
+           cout << "CSOUND_MESSAGE:" << csound->GetFirstMessage() << endl;
+           csound->PopFirstMessage();
+        }
+        cout << "CSD did not compile:" << _csCompileResult << endl;
         return false;
     }
     
