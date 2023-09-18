@@ -4,8 +4,6 @@
 #include "../common/BiduleSDK.h"
 #include <string>
 #include "CsoundLib64/csound.hpp"
-//#include "CsoundLib64/csPerfThread.hpp"
-//#include <array>
 
 using namespace std;
 
@@ -37,13 +35,15 @@ namespace acme {
         
         //Create an instance of Csound
         Csound* csound;
-        string orc, sco, csd;
+        string _orcHdr, _orc1, _orc2, _sco, _csd;
         MYFLT *spout; 
-        int _csCompileResult;
-        int _ksmpsIndex;
-        double _blurAmt;
-        double _pitch;
-        int _cnt;
+        int _csCompileResult, _ksmpsIndex, _recompileTrig;
+        double _blurAmt, _pitch, _amp;
+        size_t _cnt;
+        
+        void recompileOrc(); // setupPerformance(string& orc, string& sco)
+        void log(const std::string& message);
+        
     };
 };
 
