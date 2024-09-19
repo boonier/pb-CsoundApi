@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DCsoundTest_EXPORTS -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/Users/boonier/GIT/nativefiledialog-extended/src/include -I/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/../common -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -mmacosx-version-min=13.6 -fPIC -std=gnu++14 -o CMakeFiles/CsoundTest.dir/CsoundTest.cpp.o -c /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CsoundTest.cpp",
+  "file": "/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CsoundTest.cpp"
+},
+{
+  "directory": "/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DCsoundTest_EXPORTS -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/Users/boonier/GIT/nativefiledialog-extended/src/include -I/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/../common -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -mmacosx-version-min=13.6 -fPIC -std=gnu++14 -o CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.o -c /Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp",
+  "file": "/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp"
+}
+]

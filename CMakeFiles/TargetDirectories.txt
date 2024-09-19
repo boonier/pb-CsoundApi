@@ -1,0 +1,3 @@
+/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles/CsoundTest.dir
+/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles/edit_cache.dir
+/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles/rebuild_cache.dir

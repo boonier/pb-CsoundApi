@@ -4,7 +4,7 @@
 #include <memory>
 #include <fstream>
 #include "../common/BiduleSDK.h"
-#include "CsoundLib64/csound.hpp"
+#include "csound.hpp"
 #include "nfd.hpp"
 
 using namespace std;
