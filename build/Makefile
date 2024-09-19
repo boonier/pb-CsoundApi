@@ -31,9 +31,6 @@ default_target: all
 
 .SUFFIXES: .hpux_make_needs_suffix_list
 
-# Produce verbose output by default.
-VERBOSE = 1
-
 # Command-line flag to silence nested $(MAKE).
 $(VERBOSE)MAKESILENT = -s
 
@@ -156,6 +153,30 @@ CsoundTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CsoundTest.dir/build.make CMakeFiles/CsoundTest.dir/CsoundTest.cpp.s
 .PHONY : CsoundTest.cpp.s
 
+SDKExampleMain.o: SDKExampleMain.cpp.o
+.PHONY : SDKExampleMain.o
+
+# target to build an object file
+SDKExampleMain.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CsoundTest.dir/build.make CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o
+.PHONY : SDKExampleMain.cpp.o
+
+SDKExampleMain.i: SDKExampleMain.cpp.i
+.PHONY : SDKExampleMain.i
+
+# target to preprocess a source file
+SDKExampleMain.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CsoundTest.dir/build.make CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.i
+.PHONY : SDKExampleMain.cpp.i
+
+SDKExampleMain.s: SDKExampleMain.cpp.s
+.PHONY : SDKExampleMain.s
+
+# target to generate assembly for a file
+SDKExampleMain.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CsoundTest.dir/build.make CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.s
+.PHONY : SDKExampleMain.cpp.s
+
 Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.o: Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.o
 .PHONY : Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.o
 
@@ -192,6 +213,9 @@ help:
 	@echo "... CsoundTest.o"
 	@echo "... CsoundTest.i"
 	@echo "... CsoundTest.s"
+	@echo "... SDKExampleMain.o"
+	@echo "... SDKExampleMain.i"
+	@echo "... SDKExampleMain.s"
 	@echo "... Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.o"
 	@echo "... Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.i"
 	@echo "... Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.s"

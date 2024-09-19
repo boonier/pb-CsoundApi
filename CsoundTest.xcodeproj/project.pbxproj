@@ -18,6 +18,7 @@
 		B237FA02299BC2C500A4A44A /* BiduleSDKTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 969BD85004FFA36800A80165 /* BiduleSDKTypes.h */; };
 		B23DAEEA27289F59002E42EA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B23DAEE927289F59002E42EA /* CoreFoundation.framework */; };
 		B23F76032ABA340E0067E9FC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B23F76022ABA340E0067E9FC /* Cocoa.framework */; };
+		B24626732C9C1ECB007F9AC9 /* csound.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B24626722C9C1ECB007F9AC9 /* csound.hpp */; };
 		B29CDEAC299BD1420053A260 /* BiduleSDK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B29CDEAB299BD1420053A260 /* BiduleSDK.cpp */; };
 		B2E086362ABC5B0E00B27D0F /* libnfd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2E086342ABC5A3900B27D0F /* libnfd.a */; };
 		B2E086382ABC848E00B27D0F /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2E086372ABC848E00B27D0F /* UniformTypeIdentifiers.framework */; };
@@ -49,6 +50,7 @@
 		B20BECA9271617F700F6FB24 /* CsoundLib64.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CsoundLib64.framework; path = ../../../../../../Library/Frameworks/CsoundLib64.framework; sourceTree = "<group>"; };
 		B23DAEE927289F59002E42EA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		B23F76022ABA340E0067E9FC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		B24626722C9C1ECB007F9AC9 /* csound.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = csound.hpp; path = ../../../../../../Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers/csound.hpp; sourceTree = "<group>"; };
 		B2473DC225C1C52B00DAE97C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B29CDEAB299BD1420053A260 /* BiduleSDK.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BiduleSDK.cpp; path = ../common/BiduleSDK.cpp; sourceTree = "<group>"; };
 		B2BD9227271ED0E0009B59BA /* test8.csd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.csd; sourceTree = SOURCE_ROOT; };
@@ -77,6 +79,7 @@
 		089C166AFE841209C02AAC07 /* SDKExample */ = {
 			isa = PBXGroup;
 			children = (
+				B24626722C9C1ECB007F9AC9 /* csound.hpp */,
 				B2E086342ABC5A3900B27D0F /* libnfd.a */,
 				08FB77ADFE841716C02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
@@ -153,6 +156,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B24626732C9C1ECB007F9AC9 /* csound.hpp in Headers */,
 				9626A795095321AC006C620D /* BiduleSDK.h in Headers */,
 				B237FA02299BC2C500A4A44A /* BiduleSDKTypes.h in Headers */,
 				9626A797095321AC006C620D /* CsoundTest.h in Headers */,

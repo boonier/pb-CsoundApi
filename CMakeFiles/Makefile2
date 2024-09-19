@@ -28,9 +28,6 @@ default_target: all
 
 .SUFFIXES: .hpux_make_needs_suffix_list
 
-# Produce verbose output by default.
-VERBOSE = 1
-
 # Command-line flag to silence nested $(MAKE).
 $(VERBOSE)MAKESILENT = -s
 
@@ -84,12 +81,12 @@ clean: CMakeFiles/CsoundTest.dir/clean
 CMakeFiles/CsoundTest.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CsoundTest.dir/build.make CMakeFiles/CsoundTest.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CsoundTest.dir/build.make CMakeFiles/CsoundTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles --progress-num=1,2,3 "Built target CsoundTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles --progress-num=1,2,3,4 "Built target CsoundTest"
 .PHONY : CMakeFiles/CsoundTest.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/CsoundTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/CsoundTest.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/CMakeFiles 0
 .PHONY : CMakeFiles/CsoundTest.dir/rule

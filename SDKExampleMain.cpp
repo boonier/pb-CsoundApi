@@ -1,10 +1,8 @@
-
-#if _WINDOWS
-#define DLLExport extern "C" __declspec(dllexport)
-#endif
-#if MAC
+// #if _WINDOWS
+// #define DLLExport extern "C" __declspec(dllexport)
+// #elif MAC
 #define DLLExport extern "C"
-#endif
+// #endif
 
 #include "../common/BiduleSDK.h"
 #include "CsoundTest.h"

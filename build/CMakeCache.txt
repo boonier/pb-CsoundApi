@@ -215,9 +215,6 @@ CMAKE_STRIP:FILEPATH=/Applications/Xcode.app/Contents/Developer/Toolchains/Xcode
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//Dependencies for the target
-CsoundTest_LIB_DEPENDS:STATIC=general;-framework CsoundLib64 -F/Library/Frameworks;general;/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/libnfd.a;general;-framework AppKit -framework UniformTypeIdentifiers -framework Cocoa -framework CoreFoundation;
-
 
 ########################
 # INTERNAL cache entries

@@ -1,13 +1,13 @@
 # CMakeLists.txt
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 project(BidulePlugin)
-
+# add_executable(CsoundTest CsoundTest.cpp)
 message("CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED OFF)
 
@@ -17,20 +17,24 @@ set(PLUGIN_NAME "CsoundTest")
 # Define the Bidule SDK directory
 set(BIDULE_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 
-# Set the include directories
-include_directories("/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers")
-include_directories("/Users/boonier/GIT/nativefiledialog-extended/src/include")
-message("Include directories: ${INCLUDE_DIRECTORIES}")
-
-
-# Include the Bidule SDK headers
-include_directories("${BIDULE_SDK_DIR}")
-
 # Add the Bidule SDK source file to the plugin
 add_library(${PLUGIN_NAME} MODULE
   CsoundTest.cpp
   ${BIDULE_SDK_DIR}/BiduleSDK.cpp
 )
+
+target_sources(${PLUGIN_NAME} PRIVATE SDKExampleMain.cpp)
+
+# Include the Bidule SDK headers
+include_directories("${BIDULE_SDK_DIR}")
+# include_directories("/Users/boonier/GIT/nativefiledialog-extended/src/include")
+# Set the include directories on the target
+target_include_directories(CsoundTest PRIVATE "/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers")
+target_include_directories(CsoundTest PRIVATE "/Users/boonier/GIT/nativefiledialog-extended/src/include")
+
+
+get_target_property(INCLUDE_DIRS CsoundTest INCLUDE_DIRECTORIES)
+message("Include directories: ${INCLUDE_DIRS}")
 
 # Copy the InfoPlist.strings file to the plugin bundle -- is require for Bidule?
 add_custom_command(TARGET ${PLUGIN_NAME} PRE_BUILD
@@ -43,17 +47,9 @@ add_custom_command(TARGET ${PLUGIN_NAME} PRE_BUILD
 )
 
 # Add the Csound library to the plugin
-target_link_libraries(${PLUGIN_NAME} PRIVATE "-framework CsoundLib64 -F/Library/Frameworks")
-target_link_libraries(${PLUGIN_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libnfd.a)
-target_link_libraries(${PLUGIN_NAME} PRIVATE "-framework AppKit -framework UniformTypeIdentifiers -framework Cocoa -framework CoreFoundation")
-
-
-# target_include_directories(${PLUGIN_NAME} PUBLIC
-#   "${BIDULE_SDK_DIR}"
-#   "/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers"
-#   "/Users/boonier/GIT/nativefiledialog-extended/src/include"
-# )
-
+target_link_libraries(${PLUGIN_NAME} PUBLIC "-framework CsoundLib64 -F/Library/Frameworks")
+target_link_libraries(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libnfd.a)
+target_link_libraries(${PLUGIN_NAME} PUBLIC "-framework AppKit -framework UniformTypeIdentifiers -framework Cocoa -framework CoreFoundation")
 
 # Set the plugin bundle output directory
 set_target_properties(${PLUGIN_NAME} PROPERTIES

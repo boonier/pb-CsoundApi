@@ -27,9 +27,6 @@
 
 .SUFFIXES: .hpux_make_needs_suffix_list
 
-# Produce verbose output by default.
-VERBOSE = 1
-
 # Command-line flag to silence nested $(MAKE).
 $(VERBOSE)MAKESILENT = -s
 
@@ -100,20 +97,36 @@ CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp -o CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.s
 
+CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o: CMakeFiles/CsoundTest.dir/flags.make
+CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o: ../SDKExampleMain.cpp
+CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o: CMakeFiles/CsoundTest.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o -MF CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o.d -o CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o -c /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/SDKExampleMain.cpp
+
+CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/SDKExampleMain.cpp > CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.i
+
+CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/SDKExampleMain.cpp -o CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.s
+
 # Object files for target CsoundTest
 CsoundTest_OBJECTS = \
 "CMakeFiles/CsoundTest.dir/CsoundTest.cpp.o" \
-"CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.o"
+"CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.o" \
+"CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o"
 
 # External object files for target CsoundTest
 CsoundTest_EXTERNAL_OBJECTS =
 
 CsoundTest.bundle/Contents/MacOS/CsoundTest: CMakeFiles/CsoundTest.dir/CsoundTest.cpp.o
 CsoundTest.bundle/Contents/MacOS/CsoundTest: CMakeFiles/CsoundTest.dir/Users/boonier/GIT/Bidule/bidulesdk/common/BiduleSDK.cpp.o
+CsoundTest.bundle/Contents/MacOS/CsoundTest: CMakeFiles/CsoundTest.dir/SDKExampleMain.cpp.o
 CsoundTest.bundle/Contents/MacOS/CsoundTest: CMakeFiles/CsoundTest.dir/build.make
 CsoundTest.bundle/Contents/MacOS/CsoundTest: ../libnfd.a
 CsoundTest.bundle/Contents/MacOS/CsoundTest: CMakeFiles/CsoundTest.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX CFBundle shared module CsoundTest.bundle/Contents/MacOS/CsoundTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX CFBundle shared module CsoundTest.bundle/Contents/MacOS/CsoundTest"
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying InfoPlist.strings to bundle"
 	/opt/homebrew/Cellar/cmake/3.23.2/bin/cmake -E make_directory /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build/CsoundTest.bundle/Contents/Resources/en.lproj/
 	/opt/homebrew/Cellar/cmake/3.23.2/bin/cmake -E copy /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/en.lproj/InfoPlist.strings /Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/build/CsoundTest.bundle/Contents/Resources/en.lproj/

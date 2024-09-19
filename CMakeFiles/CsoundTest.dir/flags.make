@@ -4,7 +4,7 @@
 # compile CXX with /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
 CXX_DEFINES = -DCsoundTest_EXPORTS
 
-CXX_INCLUDES = -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/Users/boonier/GIT/nativefiledialog-extended/src/include -I/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/../common
+CXX_INCLUDES = -I/Users/boonier/GIT/Bidule/bidulesdk/pb-CsoundApi/../common -I/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers -I/Users/boonier/GIT/nativefiledialog-extended/src/include
 
 CXX_FLAGSarm64 =  -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk -mmacosx-version-min=13.6 -fPIC -std=gnu++14
 
