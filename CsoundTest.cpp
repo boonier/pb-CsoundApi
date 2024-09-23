@@ -48,11 +48,7 @@ CsoundTest::CsoundTest(BiduleHost *host) : BidulePlugin(host)
 
 CsoundTest::~CsoundTest()
 {
-    // free Csound stuff
-    _csound->Cleanup();
-    _csound->Reset();
-    _csound = nullptr;
-    //    delete _tempDisplayedParams;
+    log("CsoundTest destructor");
 }
 
 void CsoundTest::log(string_view message)
@@ -389,28 +385,12 @@ void CsoundTest::process(Sample **sampleIn, Sample **sampleOut, MIDIEvents *midi
                 _csCompileResult = _csound->PerformKsmps();
                 if (_csCompileResult == 0)
                 {
-                    //                    while (_csound->GetMessageCnt() > 0) {
-                    //                        cout << "CSOUND_MESSAGE:" << _csound->GetFirstMessage() <<  endl;
-                    //                        _csound->PopFirstMessage();
-                    //                    }
                     _ksmpsIndex = 0;
                 }
             }
 
-            //            if (_tempDisplayedParams[0] == '\0') {
-            //                _csound->GetStringChannel("Pfields", _tempDisplayedParams);
-            //                updateParameter(6, _tempDisplayedParams);
-            //            }
-
-            // update the channels -- loop?
-            //            if ((*s1in++) == 0.f) {
             // use the plugin ui slider
             _csound->SetChannel("p1", _p1);
-            //            } else {
-            //                // use the input pin
-            //                _csound->SetChannel("p1", (*s1in++));
-            //            }
-            //
             _csound->SetChannel("p2", _p2);
             _csound->SetChannel("p3", _p3);
             _csound->SetChannel("p4", _p4);
