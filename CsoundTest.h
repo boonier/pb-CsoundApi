@@ -1,49 +1,55 @@
-#ifndef PASSTHROUGHALL_H
-#define PASSTHROUGHALL_H
+#pragma once
 
-#include "../common/BiduleSDK.h"
 #include <string>
-#include "CsoundLib64/csound.hpp"
-//#include "CsoundLib64/csPerfThread.hpp"
-#include <array>
+#include <memory>
+#include <fstream>
+#include "../common/BiduleSDK.h"
+#include "csound.hpp"
+#include "nfd.hpp"
 
 using namespace std;
 
-namespace acme {
+namespace acme
+{
     using namespace plogue::biduleSDK;
-    class CsoundTest: public BidulePlugin {
+    class CsoundTest : public BidulePlugin
+    {
 
-	    public:
-		    CsoundTest(BiduleHost* host);
-			virtual ~CsoundTest();
-            virtual bool init();
-			virtual void getAudioInNames(std::vector<std::string>& vec);
-			virtual void getAudioOutNames(std::vector<std::string>& vec);
-			virtual void getMIDIInNames(std::vector<std::string>& vec);
-			virtual void getMIDIOutNames(std::vector<std::string>& vec);
-			virtual void getFreqInNames(std::vector<std::string>& vec);
-			virtual void getFreqOutNames(std::vector<std::string>& vec);
-			virtual void getMagInNames(std::vector<std::string>& vec);
-			virtual void getMagOutNames(std::vector<std::string>& vec);
+    public:
+        CsoundTest(BiduleHost *host);
+        virtual ~CsoundTest();
+        virtual bool init() override;
+        virtual void getAudioInNames(std::vector<std::string> &vec) override;
+        virtual void getAudioOutNames(std::vector<std::string> &vec) override;
+        virtual void getMIDIInNames(std::vector<std::string> &vec) override;
+        virtual void getMIDIOutNames(std::vector<std::string> &vec) override;
+        virtual void getFreqInNames(std::vector<std::string> &vec) override;
+        virtual void getFreqOutNames(std::vector<std::string> &vec) override;
+        virtual void getMagInNames(std::vector<std::string> &vec) override;
+        virtual void getMagOutNames(std::vector<std::string> &vec) override;
 
-            virtual void parameterUpdate(long id);
-			virtual void getParametersInfos(ParameterInfo* pinfos);
-			virtual void getParameterChoices(long id, vector<string>& vec);
+        virtual void parameterUpdate(long id) override;
+        virtual void getParametersInfos(ParameterInfo *pinfos) override;
+        virtual void getParameterChoices(long id, vector<string> &vec) override;
+        // virtual void updateParameter(long id, const std::string& strVal) override;
 
-			virtual void process(Sample** sampleIn, Sample** sampleOut, MIDIEvents* midiIn, MIDIEvents* midiOut, Frequency*** freqIn, Frequency*** freqOut, Magnitude*** magIn, Magnitude*** magOut, SyncInfo* syncIn, SyncInfo* syncOut);
-		
-        protected:
-            //Create an instance of Csound
-            Csound* csound;
-            string csoundText;
-            MYFLT *spin, *spout;
-            int csCompileResult = -1;
-            int ksmpsIndex = 0;
-            array<float, 256> sinTable;
-            double _blurAmt;
-        double _pitch;
-            
+        virtual void process(Sample **sampleIn, Sample **sampleOut, MIDIEvents *midiIn, MIDIEvents *midiOut, Frequency ***freqIn, Frequency ***freqOut, Magnitude ***magIn, Magnitude ***magOut, SyncInfo *syncIn, SyncInfo *syncOut) override;
+
+    protected:
+        void log(string_view message);
+        void openCsdFile();
+        void compileCsdFile();
+        void recompileCsdFile();
+        void setDisplayLabel(string &label);
+
+        string _savedCsdPath, _displayedCsdPath, _displayedParams;
+        // string _filePath; // used?
+        unique_ptr<Csound> _csound;
+        MYFLT *spin, *spout;
+        int _csCompileResult, _ksmpsIndex, _triggerOpenDialog, _doRecompile;
+        double _blurAmt, _pitch, _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8;
+        unique_ptr<char[]> _tempDisplayedParams;
+        bool _isDone;
+        // char _isRunning;
     };
 };
-
-#endif

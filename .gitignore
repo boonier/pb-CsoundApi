@@ -1,1 +1,13 @@
 .DS_Store
+build
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+.vscode
+*.obj
+*.o
+*.so
+*.cmake
+*.bundle
+install_manifest.txt

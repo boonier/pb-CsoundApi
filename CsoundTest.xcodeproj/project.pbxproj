@@ -13,12 +13,16 @@
 		9626A79B095321AC006C620D /* csound in Sources */ = {isa = PBXBuildFile; fileRef = 969BD84E04FFA36800A80165 /* csound */; };
 		9626A79C095321AC006C620D /* CsoundTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969BD85404FFA37800A80165 /* CsoundTest.cpp */; };
 		9626A79D095321AC006C620D /* SDKExampleMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 969BD85804FFA38400A80165 /* SDKExampleMain.cpp */; };
-		9626A79F095321AC006C620D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08EA7FFBFE8413EDC02AAC07 /* Carbon.framework */; };
 		B20BECAD27162D4A00F6FB24 /* CsoundLib64.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B20BECA9271617F700F6FB24 /* CsoundLib64.framework */; };
 		B21E384A271F20EA00911E3E /* test8.csd in Resources */ = {isa = PBXBuildFile; fileRef = B2BD9227271ED0E0009B59BA /* test8.csd */; };
 		B237FA02299BC2C500A4A44A /* BiduleSDKTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 969BD85004FFA36800A80165 /* BiduleSDKTypes.h */; };
 		B23DAEEA27289F59002E42EA /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B23DAEE927289F59002E42EA /* CoreFoundation.framework */; };
+		B23F76032ABA340E0067E9FC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B23F76022ABA340E0067E9FC /* Cocoa.framework */; };
+		B24626732C9C1ECB007F9AC9 /* csound.hpp in Headers */ = {isa = PBXBuildFile; fileRef = B24626722C9C1ECB007F9AC9 /* csound.hpp */; };
 		B29CDEAC299BD1420053A260 /* BiduleSDK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B29CDEAB299BD1420053A260 /* BiduleSDK.cpp */; };
+		B2E086362ABC5B0E00B27D0F /* libnfd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2E086342ABC5A3900B27D0F /* libnfd.a */; };
+		B2E086382ABC848E00B27D0F /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2E086372ABC848E00B27D0F /* UniformTypeIdentifiers.framework */; };
+		B2E0863A2ABC8A9F00B27D0F /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2E086392ABC8A9F00B27D0F /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,7 +39,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08EA7FFBFE8413EDC02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		9626A7A5095321AC006C620D /* Info-CsoundTest__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-CsoundTest__Upgraded_.plist"; sourceTree = "<group>"; };
 		9626A7A6095321AC006C620D /* CsoundTest.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CsoundTest.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		969BD84E04FFA36800A80165 /* csound */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = "compiled.mach-o.executable"; name = csound; path = ../../../../../../usr/local/bin/csound; sourceTree = SOURCE_ROOT; };
@@ -46,9 +49,14 @@
 		969BD85804FFA38400A80165 /* SDKExampleMain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SDKExampleMain.cpp; sourceTree = SOURCE_ROOT; };
 		B20BECA9271617F700F6FB24 /* CsoundLib64.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CsoundLib64.framework; path = ../../../../../../Library/Frameworks/CsoundLib64.framework; sourceTree = "<group>"; };
 		B23DAEE927289F59002E42EA /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		B23F76022ABA340E0067E9FC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		B24626722C9C1ECB007F9AC9 /* csound.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = csound.hpp; path = ../../../../../../Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers/csound.hpp; sourceTree = "<group>"; };
 		B2473DC225C1C52B00DAE97C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B29CDEAB299BD1420053A260 /* BiduleSDK.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BiduleSDK.cpp; path = ../common/BiduleSDK.cpp; sourceTree = "<group>"; };
 		B2BD9227271ED0E0009B59BA /* test8.csd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test8.csd; sourceTree = SOURCE_ROOT; };
+		B2E086342ABC5A3900B27D0F /* libnfd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libnfd.a; sourceTree = "<group>"; };
+		B2E086372ABC848E00B27D0F /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		B2E086392ABC8A9F00B27D0F /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,9 +64,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B23F76032ABA340E0067E9FC /* Cocoa.framework in Frameworks */,
 				B20BECAD27162D4A00F6FB24 /* CsoundLib64.framework in Frameworks */,
-				9626A79F095321AC006C620D /* Carbon.framework in Frameworks */,
 				B23DAEEA27289F59002E42EA /* CoreFoundation.framework in Frameworks */,
+				B2E0863A2ABC8A9F00B27D0F /* AppKit.framework in Frameworks */,
+				B2E086362ABC5B0E00B27D0F /* libnfd.a in Frameworks */,
+				B2E086382ABC848E00B27D0F /* UniformTypeIdentifiers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +79,8 @@
 		089C166AFE841209C02AAC07 /* SDKExample */ = {
 			isa = PBXGroup;
 			children = (
+				B24626722C9C1ECB007F9AC9 /* csound.hpp */,
+				B2E086342ABC5A3900B27D0F /* libnfd.a */,
 				08FB77ADFE841716C02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
@@ -82,7 +95,6 @@
 			isa = PBXGroup;
 			children = (
 				B20BECA9271617F700F6FB24 /* CsoundLib64.framework */,
-				08EA7FFBFE8413EDC02AAC07 /* Carbon.framework */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";
@@ -129,6 +141,9 @@
 		B2A72B3B2715B4B3001DC6ED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B2E086392ABC8A9F00B27D0F /* AppKit.framework */,
+				B2E086372ABC848E00B27D0F /* UniformTypeIdentifiers.framework */,
+				B23F76022ABA340E0067E9FC /* Cocoa.framework */,
 				B23DAEE927289F59002E42EA /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
@@ -141,6 +156,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B24626732C9C1ECB007F9AC9 /* csound.hpp in Headers */,
 				9626A795095321AC006C620D /* BiduleSDK.h in Headers */,
 				B237FA02299BC2C500A4A44A /* BiduleSDKTypes.h in Headers */,
 				9626A797095321AC006C620D /* CsoundTest.h in Headers */,
@@ -248,6 +264,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -283,6 +300,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -317,6 +335,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -350,6 +369,8 @@
 		9626A7A2095321AC006C620D /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_ASSET_PATHS = test8.csd;
@@ -357,15 +378,19 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
 				);
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = MAC;
 				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = "/Users/boonier/GIT/nativefiledialog-extended/src/include/**";
 				INFOPLIST_FILE = "Info-CsoundTest__Upgraded_.plist";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=*]" = "-v";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.boonier.CsoundTest;
@@ -385,6 +410,8 @@
 		9626A7A3095321AC006C620D /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_ASSET_PATHS = test8.csd;
@@ -392,15 +419,19 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
 				);
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = MAC;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = "/Users/boonier/GIT/nativefiledialog-extended/src/include/**";
 				INFOPLIST_FILE = "Info-CsoundTest__Upgraded_.plist";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=*]" = "-v";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.boonier.CsoundTest;
@@ -420,18 +451,24 @@
 		9626A7A4095321AC006C620D /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				DEVELOPMENT_ASSET_PATHS = test8.csd;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
 				);
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = MAC;
 				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = "/Users/boonier/GIT/nativefiledialog-extended/src/include/**";
 				INFOPLIST_FILE = "Info-CsoundTest__Upgraded_.plist";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
