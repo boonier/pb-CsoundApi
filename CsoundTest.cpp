@@ -20,10 +20,10 @@ CsoundTest::CsoundTest(BiduleHost *host) : BidulePlugin(host)
     //  _caps = CAP_SYNCMASTER | CAP_SYNCSLAVE
     _caps = CAP_SYNCSLAVE;
 
-    _numAudioIns = 2;
-    _numAudioOuts = 2;
-    _numMIDIIns = 0;
-    _numMIDIOuts = 0;
+    _numAudioIns = 17;
+    _numAudioOuts = 18;
+    _numMIDIIns = 1;
+    _numMIDIOuts = 1;
     _numFreqIns = 0;
     _numFreqOuts = 0;
     _numMagIns = 0;
@@ -56,6 +56,15 @@ void CsoundTest::log(string_view message)
     cout << "[LOG] " << message << endl;
 }
 
+/**
+ * @brief Opens a file dialog for selecting a Csound CSD file. The chosen file
+ * path is stored in _savedCsdPath and used to compile the Csound engine.
+ *
+ * This function is called by the GUI when the user clicks on the "Open CSD"
+ * button.
+ *
+ * @return void
+ */
 void CsoundTest::openCsdFile()
 {
     if (_triggerOpenDialog == 1)
@@ -98,6 +107,17 @@ void CsoundTest::openCsdFile()
     }
 }
 
+/**
+ * @brief Compile a Csound CSD file stored in _savedCsdPath.
+ *
+ * This function is called when the user selects a new CSD file via the
+ * "Open CSD" button. It checks if a valid Csound instance exists, and if
+ * not, creates one. It then compiles the CSD file using the Csound
+ * instance and stores the result in _csCompileResult. If the compile is
+ * successful, it starts the Csound performance.
+ *
+ * @return void
+ */
 void CsoundTest::compileCsdFile()
 {
     log("calling compileCsdFile");
@@ -194,14 +214,11 @@ bool CsoundTest::init()
 
 void CsoundTest::getAudioInNames(std::vector<std::string> &vec)
 {
-    vec.push_back("p1");
-    vec.push_back("p2");
-    //    vec.push_back("p3");
-    //    vec.push_back("p4");
-    //    vec.push_back("p5");
-    //    vec.push_back("p6");
-    //    vec.push_back("p7");
-    //    vec.push_back("p8");
+    for (int i = 0; i < 16; i++)
+    {
+        std::string name = "p" + std::to_string(i + 1);
+        vec.push_back(name);
+    }
     vec.push_back("Send Event");
 }
 
@@ -366,6 +383,8 @@ void CsoundTest::process(Sample **sampleIn, Sample **sampleOut, MIDIEvents *midi
     long sampleFrames = _dspInfo.bufferSize;
     unsigned int channels = 2;
 
+    Sample *s1in = sampleIn[0];
+    Sample *s2in = sampleIn[1];
     Sample *s1out = sampleOut[0];
     Sample *s2out = sampleOut[1];
 
@@ -382,6 +401,10 @@ void CsoundTest::process(Sample **sampleIn, Sample **sampleOut, MIDIEvents *midi
         {
             if (_ksmpsIndex == _csound->GetKsmps())
             {
+
+                // _isRunning = syncIn->playing;
+                // log("isRunning = " + to_string(_isRunning));
+
                 _csCompileResult = _csound->PerformKsmps();
                 if (_csCompileResult == 0)
                 {
@@ -399,7 +422,11 @@ void CsoundTest::process(Sample **sampleIn, Sample **sampleOut, MIDIEvents *midi
             _csound->SetChannel("p7", _p7);
             _csound->SetChannel("p8", _p8);
 
-            // send the noise out
+            // send the input to csound
+            spin[0 + (_ksmpsIndex * channels)] = *s1in++;
+            spin[1 + (_ksmpsIndex * channels)] = *s2in++;
+
+            // get the output from csound
             (*s1out++) = spout[0 + (_ksmpsIndex * channels)];
             (*s2out++) = spout[1 + (_ksmpsIndex * channels)];
 

@@ -50,5 +50,6 @@ namespace acme
         double _blurAmt, _pitch, _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8;
         unique_ptr<char[]> _tempDisplayedParams;
         bool _isDone;
+        // char _isRunning;
     };
 };

@@ -33,7 +33,7 @@ include_directories("${BIDULE_SDK_DIR}")
 target_include_directories(CsoundTest PRIVATE "/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers")
 target_include_directories(CsoundTest PRIVATE "/Users/boonier/GIT/nativefiledialog-extended/src/include")
 
-message("HERE1")
+# message("HERE1")
 get_target_property(INCLUDE_DIRS CsoundTest INCLUDE_DIRECTORIES)
 message("Include directories: ${INCLUDE_DIRS}")
 
