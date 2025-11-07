@@ -1,7 +1,6 @@
 # CMakeLists.txt
 cmake_minimum_required(VERSION 3.20)
 project(BidulePlugin)
-# add_executable(CsoundTest CsoundTest.cpp)
 message("CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set the C++ standard
@@ -13,14 +12,14 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_INSTALL_PREFIX "/Users/boonier/Music/Plogue/Bidule/plugins")
 
 # Define the plugin bundle name
-set(PLUGIN_NAME "CsoundTest")
+set(PLUGIN_NAME "CsoundApi")
 
 # Define the Bidule SDK directory
 set(BIDULE_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../common")
 
 # Add the Bidule SDK source file to the plugin
 add_library(${PLUGIN_NAME} MODULE
-  CsoundTest.cpp
+  CsoundApi.cpp
   ${BIDULE_SDK_DIR}/BiduleSDK.cpp
 )
 
@@ -28,14 +27,16 @@ target_sources(${PLUGIN_NAME} PRIVATE SDKExampleMain.cpp)
 
 # Include the Bidule SDK headers
 include_directories("${BIDULE_SDK_DIR}")
-# include_directories("/Users/boonier/GIT/nativefiledialog-extended/src/include")
 # Set the include directories on the target
-target_include_directories(CsoundTest PRIVATE "/Library/Frameworks/CsoundLib64.framework/Versions/6.0/Headers")
-target_include_directories(CsoundTest PRIVATE "/Users/boonier/GIT/nativefiledialog-extended/src/include")
-
+target_include_directories(CsoundApi PRIVATE
+    "/Applications/Csound/CsoundLib64.framework/Headers"
+    "/Users/boonier/GIT/nativefiledialog-extended/src/include"
+)
 # message("HERE1")
-get_target_property(INCLUDE_DIRS CsoundTest INCLUDE_DIRECTORIES)
+get_target_property(INCLUDE_DIRS CsoundApi INCLUDE_DIRECTORIES)
 message("Include directories: ${INCLUDE_DIRS}")
+
+
 
 # Copy the InfoPlist.strings file to the plugin bundle -- is require for Bidule?
 add_custom_command(TARGET ${PLUGIN_NAME} PRE_BUILD
@@ -48,7 +49,9 @@ add_custom_command(TARGET ${PLUGIN_NAME} PRE_BUILD
 )
 
 # Add the Csound library to the plugin
-target_link_libraries(${PLUGIN_NAME} PUBLIC "-framework CsoundLib64 -F/Library/Frameworks")
+# target_link_libraries(${PLUGIN_NAME} PUBLIC "-framework CsoundLib64 -F/Library/Frameworks")
+target_link_libraries(${PLUGIN_NAME} PUBLIC "-framework CsoundLib64" "-F/Applications/Csound")
+# find_library(Csound NAMES CsoundLib64 PATHS "/Applications/Csound" REQUIRED NO_DEFAULT_PATH)
 target_link_libraries(${PLUGIN_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libnfd.a)
 target_link_libraries(${PLUGIN_NAME} PUBLIC "-framework AppKit -framework UniformTypeIdentifiers -framework Cocoa -framework CoreFoundation")
 
@@ -64,5 +67,5 @@ set_target_properties(${PLUGIN_NAME} PROPERTIES
 
 message("About to install plugin bundle...")
 # Remove existing executable
-install(CODE "file(REMOVE ${CMAKE_INSTALL_PREFIX}/CsoundTest.bundle)")
+install(CODE "file(REMOVE ${CMAKE_INSTALL_PREFIX}/CsoundApi.bundle)")
 install(TARGETS ${PLUGIN_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/")
