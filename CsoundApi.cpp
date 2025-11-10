@@ -3,8 +3,10 @@
 #include <math.h>
 
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <string>
+#include <thread>
 
 // #include "csound.hpp"
 
@@ -23,8 +25,8 @@ CsoundApi::CsoundApi(BiduleHost* host) : BidulePlugin(host) {
   //  _caps = CAP_SYNCMASTER | CAP_SYNCSLAVE
   _caps = CAP_SYNCSLAVE;
 
-  _numAudioIns = 17;
-  _numAudioOuts = 18;
+  _numAudioIns = 2;
+  _numAudioOuts = 2;
   _numMIDIIns = 1;
   _numMIDIOuts = 1;
   _numFreqIns = 0;
@@ -67,6 +69,13 @@ void CsoundApi::log(string_view message) {
 void CsoundApi::openCsdFile() {
   if (_triggerOpenDialog == 1) {
     log("openCsdFile" + to_string(_triggerOpenDialog));
+
+    // Pause audio processing
+    _isProcessing = false;
+
+    // Give audio thread time to finish current processing
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
     // initialize NFD
     NFD::Guard nfdGuard;
     // auto-freeing memory
@@ -90,8 +99,10 @@ void CsoundApi::openCsdFile() {
       compileCsdFile();
     } else if (result == NFD_CANCEL) {
       log("User pressed cancel.");
+      _isProcessing = true;
     } else {
       std::cout << "Error: " << NFD::GetError() << std::endl;
+      _isProcessing = true;
     }
 
     // reset trigger state
@@ -112,45 +123,37 @@ void CsoundApi::openCsdFile() {
  */
 void CsoundApi::compileCsdFile() {
   log("calling compileCsdFile");
-  // 1. On init, check _savedCsdPath for a stored csd path
-  //      a. if nothing found, do nothing
-  // 2. If path found, check for existing instance of Csound
-  //      a. if Csound found, assign value of nullptr
-  // 3. then create new Csound instance
-  // 4. call csound->Compile(...), and store result to _csCompileResult
-  // 5.
-
-  // let's reset the csound instance, said Rory
-  if (_csound.get() != nullptr) {
-    // does Reset() need to be called if setting to nullptr?
-    _csound->Reset();
-    _csound = nullptr;
-    // reset the _csCompileResult flag
-    _csCompileResult = -1;
-  }
 
   // re-create the csound instance
-  _csound = make_unique<Csound>(new Csound());
-  ///
-  cout << _csound << endl;
-  cout << "version:" << _csound->GetVersion() << endl;
-  // cout << "api version:" << _csound->GetAPIVersion() << endl;
-  ///
+  _csound = make_unique<Csound>();
+  // check it's instantiated
+  log("version:" + to_string(_csound->GetVersion()));
+
   _csound->CreateMessageBuffer(0);
   _csound->SetHostAudioIO();
 
-  if (_savedCsdPath.length() > 0) {
+  if (_savedCsdPath.length() > 0 && _csound != nullptr) {
+    log("compiling " + _savedCsdPath);
     _csCompileResult = _csound->Compile(_savedCsdPath.c_str());
     log("_csCompileResult = " + to_string(_csCompileResult));
 
     if (_csCompileResult == 0) {  // compiled OK...
-      cout << "CSOUND_MESSAGE:" << _csound->GetFirstMessage() << endl;
-      // access Csound's input/output buffer
+      log("Successful CSD compile, starting...");
+      _csound->Start();
       spout = _csound->GetSpout();
       spin = _csound->GetSpin();
+      _isProcessing = true;
 
-      // start Csound performance
-      _csound->Start();
+      //////
+      std::string logMsg = "Process status: ";
+      logMsg +=
+          "_isProcessing=" + std::string(_isProcessing ? "true" : "false");
+      logMsg += ", _csCompileResult=" + std::to_string(_csCompileResult);
+      logMsg += ", _csound=" + std::string(_csound ? "valid" : "nullptr");
+      logMsg += ", spin=" + std::string(spin ? "valid" : "nullptr");
+      logMsg += ", spout=" + std::string(spout ? "valid" : "nullptr");
+      log(logMsg);
+      /////
 
       std::vector<char> temp(256);  // allocate a buffer of size 256
       _csound->GetStringChannel("cs_params", temp.data());
@@ -158,13 +161,12 @@ void CsoundApi::compileCsdFile() {
       std::string str(temp.begin(), temp.begin() + temp.size());
       updateParameter(6, str);
 
-      cout << "Successful CSD compile, starting..." << endl;
     } else {
       while (_csound->GetMessageCnt() > 0) {
         cout << "CSOUND_MESSAGE:" << _csound->GetFirstMessage() << endl;
         _csound->PopFirstMessage();
       }
-      cout << "CSD did not compile:" << _csCompileResult << endl;
+      log("CSD did not compile:" + to_string(_csCompileResult));
       //            return false;
     }
   } else {
@@ -175,13 +177,20 @@ void CsoundApi::compileCsdFile() {
 
 void CsoundApi::recompileCsdFile() {
   log("recompileCsdFile called");
+
+  _isProcessing = false;
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
   if (_doRecompile == 1) {
-    // set the outputs to 0 in the process loop?
-    // reset shit
-    _csCompileResult = -1;
-    _doRecompile = 0;
+    if (_csound) {
+      _csound->Reset();
+    }
     spin = nullptr;
     spout = nullptr;
+    _csCompileResult = -1;
+    _doRecompile = 0;
+
     // call compileCsdFile and join all the stuff up again
     compileCsdFile();
   }
@@ -225,8 +234,8 @@ void CsoundApi::getParametersInfos(ParameterInfo* pinfos) {
   pinfos[0].linkable = 1;
   pinfos[0].saveable = 1;
   pinfos[0].paramInfo.pd.defaultValue = 0.f;
-  pinfos[0].paramInfo.pd.minValue = -1.f;
-  pinfos[0].paramInfo.pd.maxValue = 1.f;
+  pinfos[0].paramInfo.pd.minValue = -std::numeric_limits<float>::max();
+  pinfos[0].paramInfo.pd.maxValue = std::numeric_limits<float>::max();
   pinfos[0].paramInfo.pd.precision = 6;
 
   pinfos[1].id = 1;
@@ -317,6 +326,7 @@ void CsoundApi::parameterUpdate(long id) {
   } else if (id == 5) {  // <- BTN - recompile the existing stored CSD path
     log("do recompile");
     // set the _doRecompile flag
+
     getParameterValue(5, _doRecompile);
     // call the recompile fn
     recompileCsdFile();
@@ -329,6 +339,9 @@ void CsoundApi::process(Sample** sampleIn, Sample** sampleOut,
                         Frequency*** freqIn, Frequency*** freqOut,
                         Magnitude*** magIn, Magnitude*** magOut,
                         SyncInfo* syncIn, SyncInfo* syncOut) {
+  // Ensure we have valid pointers before processing
+  if (!sampleIn || !sampleOut) return;
+
   long sampleFrames = _dspInfo.bufferSize;
   unsigned int channels = 2;
 
@@ -338,19 +351,21 @@ void CsoundApi::process(Sample** sampleIn, Sample** sampleOut,
   Sample* s2out = sampleOut[1];
 
   while (--sampleFrames >= 0) {
-    //        while (_csound->PerformKsmps() == 0) {
-    //           while (_csound->GetMessageCnt() > 0) {
-    //              cout << "CSOUND_MESSAGE:" << _csound->GetFirstMessage() <<
-    //              endl; _csound->PopFirstMessage();
-    //           }
-    //        }
+    // while (_csound->PerformKsmps() == 0) {
+    // while (_csound->GetMessageCnt() > 0) {
+    //     cout << "CSOUND_MESSAGE:" << _csound->GetFirstMessage() <<
+    //     endl; _csound->PopFirstMessage();
+    // }
+    // }
 
-    if (_csCompileResult == 0) {
+    // Only process if we have everything we need
+    if (_isProcessing && _csCompileResult == 0 && _csound != nullptr &&
+        spin != nullptr && spout != nullptr) {
       if (_ksmpsIndex == _csound->GetKsmps()) {
         // _isRunning = syncIn->playing;
         // log("isRunning = " + to_string(_isRunning));
-
         _csCompileResult = _csound->PerformKsmps();
+
         if (_csCompileResult == 0) {
           _ksmpsIndex = 0;
         }
@@ -367,8 +382,8 @@ void CsoundApi::process(Sample** sampleIn, Sample** sampleOut,
       _csound->SetChannel("p8", _p8);
 
       // send the input to csound
-      // spin[0 + (_ksmpsIndex * channels)] = *s1in++;
-      // spin[1 + (_ksmpsIndex * channels)] = *s2in++;
+      spin[0 + (_ksmpsIndex * channels)] = *s1in++;
+      spin[1 + (_ksmpsIndex * channels)] = *s2in++;
 
       // get the output from csound
       (*s1out++) = spout[0 + (_ksmpsIndex * channels)];
@@ -381,7 +396,7 @@ void CsoundApi::process(Sample** sampleIn, Sample** sampleOut,
     }
 
     if (!_isDone) {
-      log("process");
+      log("processing...");
       _isDone = true;
     }
   }

@@ -45,13 +45,12 @@ class CsoundApi : public BidulePlugin {
   void setDisplayLabel(string& label);
 
   string _savedCsdPath, _displayedCsdPath, _displayedParams;
-  // string _filePath; // used?
   unique_ptr<Csound> _csound;
-  const MYFLT *spin, *spout;
+  MYFLT* spin;
+  MYFLT const* spout;
   int _csCompileResult, _ksmpsIndex, _triggerOpenDialog, _doRecompile;
   double _blurAmt, _pitch, _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8;
   unique_ptr<char[]> _tempDisplayedParams;
-  bool _isDone;
-  // char _isRunning;
+  bool _isDone, _isProcessing;
 };
 };  // namespace acme

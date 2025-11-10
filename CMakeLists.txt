@@ -23,7 +23,7 @@ add_library(${PLUGIN_NAME} MODULE
   ${BIDULE_SDK_DIR}/BiduleSDK.cpp
 )
 
-target_sources(${PLUGIN_NAME} PRIVATE SDKExampleMain.cpp)
+target_sources(${PLUGIN_NAME} PRIVATE CsoundApiMain.cpp)
 
 # Include the Bidule SDK headers
 include_directories("${BIDULE_SDK_DIR}")
@@ -67,5 +67,15 @@ set_target_properties(${PLUGIN_NAME} PROPERTIES
 
 message("About to install plugin bundle...")
 # Remove existing executable
-install(CODE "file(REMOVE ${CMAKE_INSTALL_PREFIX}/CsoundApi.bundle)")
+install(CODE "
+  if(EXISTS \"${CMAKE_INSTALL_PREFIX}/CsoundApi.bundle\")
+    file(REMOVE_RECURSE \"${CMAKE_INSTALL_PREFIX}/CsoundApi.bundle\")
+  endif()
+")
 install(TARGETS ${PLUGIN_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/")
+
+# Add custom target to launch Bidule with test layout
+add_custom_target(launch_test_layout
+    COMMAND open -a "Bidule 0.9790 P64" "/Users/boonier/Desktop/BIDULE DEV TESTS/CsoundCsdTestCs7.bidule"
+    COMMENT "Launching CsoundCsdTestCs7.bidule in Bidule"
+)
