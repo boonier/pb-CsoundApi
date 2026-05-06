@@ -1,12 +1,9 @@
 #include "CsoundApi.hpp"
 
-#include <math.h>
-
 #include <iostream>
 #include <limits>
 #include <memory>
 #include <string>
-#include <thread>
 
 // #include "csound.hpp"
 
@@ -36,14 +33,10 @@ CsoundApi::CsoundApi(BiduleHost* host) : BidulePlugin(host) {
   _numUIColumns = 1;
   _numParams = 7;
 
+  log("CsoundApi constructor initialising vars");
   // own params
   _blurAmt = 0.25;
   _p1 = _p2 = _p3 = _p4 = _p5 = _p6 = _p7 = _p8 = 0.f;
-
-  _csCompileResult = -1;
-  _ksmpsIndex = 0;
-  _triggerOpenDialog = 0;
-  _doRecompile = 0;
 
   _displayedParams = "";
   _tempDisplayedParams = unique_ptr<char[]>(new char[4096]);
@@ -67,46 +60,33 @@ void CsoundApi::log(string_view message) {
  * @return void
  */
 void CsoundApi::openCsdFile() {
-  if (_triggerOpenDialog == 1) {
-    log("openCsdFile" + to_string(_triggerOpenDialog));
+  log("openCsdFile");
 
-    // Pause audio processing
-    _isProcessing = false;
+  // initialize NFD
+  NFD::Guard nfdGuard;
+  // auto-freeing memory
+  NFD::UniquePath outPath;
+  // only allow .csd files
+  nfdfilteritem_t filterItem[2] = {{"Csound CSD file", "csd"}};
 
-    // Give audio thread time to finish current processing
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  // show the dialog (this is a blocking call on the UI thread)
+  nfdresult_t result = NFD::OpenDialog(outPath, filterItem, 1);
+  if (result == NFD_OKAY) {
+    string outPathStr(outPath.get());
+    log("outPath result = " + outPathStr);
+    // store outPathStr to label
+    _savedCsdPath = outPathStr;
+    updateParameter(3, _savedCsdPath);
 
-    // initialize NFD
-    NFD::Guard nfdGuard;
-    // auto-freeing memory
-    NFD::UniquePath outPath;
-    // only allow .csd files
-    nfdfilteritem_t filterItem[2] = {{"Csound CSD file", "csd"}};
+    // update the gui
+    setDisplayLabel(outPathStr);
 
-    // show the dialog
-    nfdresult_t result = NFD::OpenDialog(outPath, filterItem, 1);
-    if (result == NFD_OKAY) {
-      string outPathStr(outPath.get());
-      log("outPath result = " + outPathStr);
-      // store outPathStr to label
-      _savedCsdPath = outPathStr;
-      updateParameter(3, _savedCsdPath);
-
-      // update the gui
-      setDisplayLabel(outPathStr);
-
-      // compile the new csd path
-      compileCsdFile();
-    } else if (result == NFD_CANCEL) {
-      log("User pressed cancel.");
-      _isProcessing = true;
-    } else {
-      std::cout << "Error: " << NFD::GetError() << std::endl;
-      _isProcessing = true;
-    }
-
-    // reset trigger state
-    _triggerOpenDialog = 0;
+    // compile the new csd path
+    compileCsdFile();
+  } else if (result == NFD_CANCEL) {
+    log("User pressed cancel.");
+  } else {
+    std::cout << "Error: " << NFD::GetError() << std::endl;
   }
 }
 
@@ -116,7 +96,7 @@ void CsoundApi::openCsdFile() {
  * This function is called when the user selects a new CSD file via the
  * "Open CSD" button. It checks if a valid Csound instance exists, and if
  * not, creates one. It then compiles the CSD file using the Csound
- * instance and stores the result in _csCompileResult. If the compile is
+ * instance and stores the result in the current engine state. If the compile is
  * successful, it starts the Csound performance.
  *
  * @return void
@@ -124,76 +104,62 @@ void CsoundApi::openCsdFile() {
 void CsoundApi::compileCsdFile() {
   log("calling compileCsdFile");
 
-  // re-create the csound instance
-  _csound = make_unique<Csound>();
-  // check it's instantiated
-  log("version:" + to_string(_csound->GetVersion()));
-
-  _csound->CreateMessageBuffer(0);
-  _csound->SetHostAudioIO();
-
-  if (_savedCsdPath.length() > 0 && _csound != nullptr) {
-    log("compiling " + _savedCsdPath);
-    _csCompileResult = _csound->Compile(_savedCsdPath.c_str());
-    log("_csCompileResult = " + to_string(_csCompileResult));
-
-    if (_csCompileResult == 0) {  // compiled OK...
-      log("Successful CSD compile, starting...");
-      _csound->Start();
-      spout = _csound->GetSpout();
-      spin = _csound->GetSpin();
-      _isProcessing = true;
-
-      //////
-      std::string logMsg = "Process status: ";
-      logMsg +=
-          "_isProcessing=" + std::string(_isProcessing ? "true" : "false");
-      logMsg += ", _csCompileResult=" + std::to_string(_csCompileResult);
-      logMsg += ", _csound=" + std::string(_csound ? "valid" : "nullptr");
-      logMsg += ", spin=" + std::string(spin ? "valid" : "nullptr");
-      logMsg += ", spout=" + std::string(spout ? "valid" : "nullptr");
-      log(logMsg);
-      /////
-
-      std::vector<char> temp(256);  // allocate a buffer of size 256
-      _csound->GetStringChannel("cs_params", temp.data());
-      log("cs_params = " + string(temp.begin(), temp.begin() + temp.size()));
-      std::string str(temp.begin(), temp.begin() + temp.size());
-      updateParameter(6, str);
-
-    } else {
-      while (_csound->GetMessageCnt() > 0) {
-        cout << "CSOUND_MESSAGE:" << _csound->GetFirstMessage() << endl;
-        _csound->PopFirstMessage();
-      }
-      log("CSD did not compile:" + to_string(_csCompileResult));
-      //            return false;
-    }
-  } else {
+  if (_savedCsdPath.empty()) {
     std::cerr << "Failed to read the file!" << std::endl;
-    //        return false;
+    return;
+  }
+
+  auto newEngine = std::make_shared<EngineState>();
+  newEngine->csound = std::make_shared<Csound>();
+  log("version:" + to_string(newEngine->csound->GetVersion()));
+
+  newEngine->csound->CreateMessageBuffer(0);
+  newEngine->csound->SetHostAudioIO();
+
+  log("compiling " + _savedCsdPath);
+  newEngine->csound->SetOption("--env:INCDIR+=/Users/boonier/GIT/Csound/_UDOs");
+
+  newEngine->compileResult = newEngine->csound->Compile(_savedCsdPath.c_str());
+  log("compileResult = " + to_string(newEngine->compileResult));
+
+  if (newEngine->compileResult == 0) {
+    log("Successful CSD compile, starting...");
+    newEngine->csound->Start();
+    newEngine->spout = newEngine->csound->GetSpout();
+    newEngine->spin = newEngine->csound->GetSpin();
+    newEngine->ksmpsIndex = 0;
+
+    std::vector<char> temp(256);
+    newEngine->csound->GetStringChannel("cs_params", temp.data());
+    log("cs_params = " + string(temp.begin(), temp.begin() + temp.size()));
+    std::string str(temp.begin(), temp.begin() + temp.size());
+    updateParameter(6, str);
+
+    std::atomic_store(&_engine, newEngine);
+  } else {
+    while (newEngine->csound->GetMessageCnt() > 0) {
+      cout << "CSOUND_MESSAGE:" << newEngine->csound->GetFirstMessage() << endl;
+      newEngine->csound->PopFirstMessage();
+    }
+    log("CSD did not compile:" + to_string(newEngine->compileResult));
   }
 }
 
+/**
+ * @brief Called when the user triggers the "Recompile CSD" button.
+ *
+ * This function stops any currently running Csound performance, resets the
+ * Csound instance, and then calls compileCsdFile() to recompile the
+ * stored CSD path.
+ *
+ * @return void
+ */
 void CsoundApi::recompileCsdFile() {
   log("recompileCsdFile called");
 
-  _isProcessing = false;
-
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-  if (_doRecompile == 1) {
-    if (_csound) {
-      _csound->Reset();
-    }
-    spin = nullptr;
-    spout = nullptr;
-    _csCompileResult = -1;
-    _doRecompile = 0;
-
-    // call compileCsdFile and join all the stuff up again
-    compileCsdFile();
-  }
+  // Don't reset/destroy the current engine in-place while the audio thread
+  // may still be using it. Instead, compile a new engine and atomically swap.
+  compileCsdFile();
 }
 
 bool CsoundApi::init() {
@@ -292,7 +258,7 @@ void CsoundApi::getParametersInfos(ParameterInfo* pinfos) {
   pinfos[6].linkable = 0;
   pinfos[6].saveable = 0;
   // strcpy(pinfos[6].paramInfo.ps.defaultValue, "no p-fields");
-  strcpy(pinfos[6].paramInfo.ps.defaultValue, "no p-fields");
+  strcpy(pinfos[6].paramInfo.ps.defaultValue, "no p-fields defined");
 }
 
 void CsoundApi::getParameterChoices(long id, std::vector<std::string>& vec) {}
@@ -303,33 +269,47 @@ void CsoundApi::setDisplayLabel(string& label) {
   updateParameter(4, _displayedCsdPath);
 }
 
+void CsoundApi::idle() {
+  // Called from the UI thread (per BiduleSDK.h). Do any non time critical work here.
+  if (_triggerOpenDialog.exchange(0) == 1) {
+    openCsdFile();
+  }
+
+  if (_doRecompile.exchange(0) == 1) {
+    recompileCsdFile();
+  }
+}
+
 void CsoundApi::parameterUpdate(long id) {
   if (id == 0) {
     getParameterValue(0, _p1);
   } else if (id == 1) {
     getParameterValue(1, _p2);
   } else if (id == 2) {  // <- BTN - open file
-    getParameterValue(2, _triggerOpenDialog);
-    openCsdFile();
+    int triggerOpenDialog = 0;
+    getParameterValue(2, triggerOpenDialog);
+    _triggerOpenDialog.store(triggerOpenDialog);
   } else if (id == 3) {  // <- TEXTAREA (nogui) - store/recall the csd path
     getParameterValue(3, _savedCsdPath);
     log("parameterUpdate _savedCsdPath = " + _savedCsdPath);
-    if (_savedCsdPath.length() && _csCompileResult == -1) {
+    auto engine = std::atomic_load(&_engine);
+    if (_savedCsdPath.length() && (!engine || engine->compileResult == -1)) {
       // update the ez label
       setDisplayLabel(_savedCsdPath);
+      log("parameterUpdate _savedCsdPath = " + _savedCsdPath);
       // compile the csd as we have a path
       compileCsdFile();
     }
-  } else if (id ==
-             4) {  // <- LABEL - display current csd
-                   // call re-render here (if there is a valid stored path)
-  } else if (id == 5) {  // <- BTN - recompile the existing stored CSD path
-    log("do recompile");
-    // set the _doRecompile flag
+  } else if (id == 4) {  // <- LABEL - display current csd
+    // call re-render here (if there is a valid stored path)
 
-    getParameterValue(5, _doRecompile);
-    // call the recompile fn
-    recompileCsdFile();
+  } else if (id == 5) {  // <- BTN - recompile the existing stored CSD path
+
+    log("do recompile = " + to_string(_doRecompile));
+    int doRecompile = 0;
+    getParameterValue(5, doRecompile);
+    _doRecompile.store(doRecompile);
+
   } else if (id == 6) {
     log("p-fields textarea");
   }
@@ -350,6 +330,8 @@ void CsoundApi::process(Sample** sampleIn, Sample** sampleOut,
   Sample* s1out = sampleOut[0];
   Sample* s2out = sampleOut[1];
 
+  auto engine = std::atomic_load(&_engine);
+
   while (--sampleFrames >= 0) {
     // while (_csound->PerformKsmps() == 0) {
     // while (_csound->GetMessageCnt() > 0) {
@@ -358,38 +340,31 @@ void CsoundApi::process(Sample** sampleIn, Sample** sampleOut,
     // }
     // }
 
-    // Only process if we have everything we need
-    if (_isProcessing && _csCompileResult == 0 && _csound != nullptr &&
-        spin != nullptr && spout != nullptr) {
-      if (_ksmpsIndex == _csound->GetKsmps()) {
-        // _isRunning = syncIn->playing;
-        // log("isRunning = " + to_string(_isRunning));
-        _csCompileResult = _csound->PerformKsmps();
-
-        if (_csCompileResult == 0) {
-          _ksmpsIndex = 0;
+    if (engine && engine->compileResult == 0 && engine->csound &&
+        engine->spin && engine->spout) {
+      if (engine->ksmpsIndex == engine->csound->GetKsmps()) {
+        engine->compileResult = engine->csound->PerformKsmps();
+        if (engine->compileResult == 0) {
+          engine->ksmpsIndex = 0;
         }
       }
 
-      // use the plugin ui slider
-      _csound->SetChannel("p1", _p1);
-      _csound->SetChannel("p2", _p2);
-      _csound->SetChannel("p3", _p3);
-      _csound->SetChannel("p4", _p4);
-      _csound->SetChannel("p5", _p5);
-      _csound->SetChannel("p6", _p6);
-      _csound->SetChannel("p7", _p7);
-      _csound->SetChannel("p8", _p8);
+      engine->csound->SetChannel("p1", _p1);
+      engine->csound->SetChannel("p2", _p2);
+      engine->csound->SetChannel("p3", _p3);
+      engine->csound->SetChannel("p4", _p4);
+      engine->csound->SetChannel("p5", _p5);
+      engine->csound->SetChannel("p6", _p6);
+      engine->csound->SetChannel("p7", _p7);
+      engine->csound->SetChannel("p8", _p8);
 
-      // send the input to csound
-      spin[0 + (_ksmpsIndex * channels)] = *s1in++;
-      spin[1 + (_ksmpsIndex * channels)] = *s2in++;
+      engine->spin[0 + (engine->ksmpsIndex * channels)] = *s1in++;
+      engine->spin[1 + (engine->ksmpsIndex * channels)] = *s2in++;
 
-      // get the output from csound
-      (*s1out++) = spout[0 + (_ksmpsIndex * channels)];
-      (*s2out++) = spout[1 + (_ksmpsIndex * channels)];
+      (*s1out++) = engine->spout[0 + (engine->ksmpsIndex * channels)];
+      (*s2out++) = engine->spout[1 + (engine->ksmpsIndex * channels)];
 
-      _ksmpsIndex++;
+      engine->ksmpsIndex++;
     } else {
       (*s1out++) = 0.f;
       (*s2out++) = 0.f;

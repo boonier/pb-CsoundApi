@@ -36,8 +36,9 @@ DLLExport BidulePluginStruct* newInstance(const char* type, BiduleHost* host) {
   if (strcmp(type, "com.acme.CsoundApi") == 0) {
     BidulePlugin* bp = new CsoundApi(host);
     return bp->getBidulePluginStruct();
-  } else
-    return NULL;
+  }
+
+  return NULL;
 }
 
 DLLExport void deleteInstance(BidulePluginStruct* ptr) {

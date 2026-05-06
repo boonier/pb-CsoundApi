@@ -4,7 +4,7 @@ project(BidulePlugin)
 message("CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Set the C++ standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED OFF)
@@ -74,8 +74,16 @@ install(CODE "
 ")
 install(TARGETS ${PLUGIN_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}/")
 
+add_custom_target(install_plugin
+    COMMAND ${CMAKE_COMMAND} --install "${CMAKE_BINARY_DIR}"
+    COMMENT "Installing plugin bundle"
+)
+add_dependencies(install_plugin ${PLUGIN_NAME})
+
 # Add custom target to launch Bidule with test layout
 add_custom_target(launch_test_layout
-    COMMAND open -a "Bidule 0.9790 P64" "/Users/boonier/Desktop/BIDULE DEV TESTS/CsoundCsdTestCs7.bidule"
+    COMMAND open -a "Bidule 0.9791 P64" "/Users/boonier/Desktop/BIDULE DEV TESTS/CsoundCsdTestCs7.bidule"
     COMMENT "Launching CsoundCsdTestCs7.bidule in Bidule"
 )
+
+add_dependencies(launch_test_layout install_plugin)

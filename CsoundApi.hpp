@@ -1,12 +1,12 @@
 #pragma once
 
-#include <fstream>
+#include <atomic>
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include "../common/BiduleSDK.h"
 #include "csound.hpp"
-#include "nfd.hpp"
 
 using namespace std;
 
@@ -31,6 +31,8 @@ class CsoundApi : public BidulePlugin {
   virtual void getParameterChoices(long id, vector<string>& vec) override;
   // virtual void updateParameter(long id, const std::string& strVal) override;
 
+  virtual void idle() override;
+
   virtual void process(Sample** sampleIn, Sample** sampleOut,
                        MIDIEvents* midiIn, MIDIEvents* midiOut,
                        Frequency*** freqIn, Frequency*** freqOut,
@@ -44,13 +46,19 @@ class CsoundApi : public BidulePlugin {
   void recompileCsdFile();
   void setDisplayLabel(string& label);
 
+  struct EngineState {
+    std::shared_ptr<Csound> csound;
+    MYFLT* spin{nullptr};
+    MYFLT const* spout{nullptr};
+    int ksmpsIndex{0};
+    int compileResult{-1};
+  };
+
   string _savedCsdPath, _displayedCsdPath, _displayedParams;
-  unique_ptr<Csound> _csound;
-  MYFLT* spin;
-  MYFLT const* spout;
-  int _csCompileResult, _ksmpsIndex, _triggerOpenDialog, _doRecompile;
+  std::shared_ptr<EngineState> _engine;
+  std::atomic<int> _triggerOpenDialog{0}, _doRecompile{0};
   double _blurAmt, _pitch, _p1, _p2, _p3, _p4, _p5, _p6, _p7, _p8;
   unique_ptr<char[]> _tempDisplayedParams;
-  bool _isDone, _isProcessing;
+  bool _isDone;
 };
 };  // namespace acme
